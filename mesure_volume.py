@@ -13,6 +13,12 @@ class STLUtils:
 		self.triangles = []
 		self.bytecount = []
 		self.fb = [] # debug list
+		self.min_x = float("inf")
+		self.min_y = float("inf")
+		self.min_z = float("inf")
+		self.max_x = float("-inf")
+		self.max_y = float("-inf")
+		self.max_z = float("-inf")
 		
 	# Calculate volume fo the 3D mesh using Tetrahedron volume
 	# based in: http://stackoverflow.com/questions/1406029/how-to-calculate-the-volume-of-a-3d-mesh-object-the-surface-of-which-is-made-up
@@ -40,8 +46,14 @@ class STLUtils:
 		self.normals.append(n)
 		l = len(self.points)
 		self.points.append(p1)
+		self.min_x = min(self.min_x, p1[0], p2[0], p3[0])
+		self.max_x = max(self.max_x, p1[0], p2[0], p3[0])
 		self.points.append(p2)
+		self.min_y = min(self.min_y, p1[1], p2[1], p3[1])
+		self.max_y = max(self.max_y, p1[1], p2[1], p3[1])
 		self.points.append(p3)
+		self.min_z = min(self.min_z, p1[2], p2[2], p3[2])
+		self.max_z = max(self.max_z, p1[2], p2[2], p3[2])
 		self.triangles.append((l, l+1, l+2))
 		self.bytecount.append(b[0])
 		return self.signedVolumeOfTriangle(p1,p2,p3)
@@ -81,6 +93,13 @@ class STLUtils:
 			else:
 				totalVolume = self.cm3_To_inch3Transform(totalVolume/1000)
 				print "Total volume:", totalVolume,"inch"
+			print "min_x: ", self.min_x
+			print "min_y: ", self.min_y
+			print "min_z: ", self.min_z
+			print "max_x: ", self.max_x
+			print "max_y: ", self.max_y
+			print "max_z: ", self.max_z
+
 		except Exception, e:
 			print e
 		return totalVolume
